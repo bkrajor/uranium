@@ -1,4 +1,4 @@
-let welcome=function(){
+let welcome=()=>{
     console.log("Welcome to my application. I am Bharat Kumar Rajor and a part of FunctionUp uranium cohort.")
 }
 

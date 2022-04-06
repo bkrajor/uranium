@@ -4,10 +4,9 @@ const printDate= ()=>{
 
 const printMonth= ()=>{
     const months= ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"]
-    let currentMonth= new Date().getMonth()    
-    currentMonth=months[currentMonth]
-    console.log(currentMonth)
+    "July", "August", "September", "October", "November", "December"]    
+     let currentMonth=months[new Date().getMonth()] 
+     console.log(currentMonth)   
 
 }
 
