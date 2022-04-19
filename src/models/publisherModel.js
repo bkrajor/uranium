@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
-const publisherSchema= new mongoose.Schema({
-    _id: String,
+const publisherSchema = new mongoose.Schema( {
     name: String,
     headQuarter: String
 
-},
-{timestamps:true});
-module.exports= mongoose.model('NewPublisher', publisherSchema)
+}, { timestamps: true });
+
+module.exports = mongoose.model('Publisher', publisherSchema)
