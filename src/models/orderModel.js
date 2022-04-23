@@ -14,11 +14,7 @@ const objectSchema = new mongoose.Schema({
         type: Number
     },
     isFreeAppUser: Boolean, 
-    date: {
-        type: Date, 
-        default: Date.now
-    }
-},
-{ timestamps: true});
+    date: String
+},{ timestamps: true});
 
 module.exports= mongoose.model('Order', objectSchema)

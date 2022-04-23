@@ -10,7 +10,7 @@ router.post("/createUser",middleWare.mid, userController.createUser )
 
 router.post("/createProduct", productController.createProduct )
 
-// router.post("/createOrder",middleWare.mid, orderController.createOrder )
+router.post("/createOrder",middleWare.mid, orderController.createOrder )
 
 
 module.exports = router;
