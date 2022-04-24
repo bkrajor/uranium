@@ -15,5 +15,7 @@ router.put("/users/:userId", middleWare.authenticate, middleWare.authorise, user
 
 router.delete('/users/:userId', middleWare.authenticate, middleWare.authorise, userController.deletedUser);
 
+router.post('/users/:userId', middleWare.authenticate, middleWare.authorise, userController.postMessage);
+
 
 module.exports = router; 

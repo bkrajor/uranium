@@ -32,7 +32,7 @@ const updatedUser = async function (req, res) {
   let userDetails = await userModel.findById(req.params.userId)
   if (!userDetails)
     return res.send("No such user exists")
- 
+
   let userData = req.body
   let updatedUser = await userModel.updateOne({ _id: req.params.userId }, { $set: userData }, { new: true })
   res.send({ status: "updatedUser true", data: updatedUser })
@@ -49,10 +49,23 @@ const deletedUser = async function (req, res) {
   res.send({ status: true, msg: deletedUser })
 }
 
+//
+const postMessage = async function (req, res) {
+  let message = req.body.message
+  let user = await userModel.findById(req.params.userId)
+  if (!user) return res.send({ status: false, msg: 'No such user exists' })
+
+  let post = user.posts
+  post.push(message)
+  let updatedUser = await userModel.findOneAndUpdate({ _id: user._id }, { posts: post }, { new: true })
+  return res.send({ status: true, data: updatedUser })
+}
+
 module.exports = {
   createUser: createUser,
   loginUser: loginUser,
   getUserData: getUserData,
   updatedUser: updatedUser,
-  deletedUser: deletedUser
+  deletedUser: deletedUser,
+  postMessage: postMessage
 }
