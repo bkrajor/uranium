@@ -1,17 +1,25 @@
-const jwt=require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const userModel = require("../models/userModel")
 
-let tokenVerification= (req,res,next)=>{
-    let token = req.headers["x-Auth-Token"]
-if (!token)
-    token = req.headers["x-auth-token"]
-if (!token)
-    res.send({ status: false, msg: "token must be present in request header" })
+const authenticate = function (req, res, next) {
+    if (!req.headers["x-auth-token"])
+        return res.send({ status: false, msg: "token must be present" });
 
+    next()
+}
+ 
+const authorise = function (req, res, next) {
+    let token = req.headers["x-auth-token"];
     let decodedToken = jwt.verify(token, "functionup-uranium")
-  if (!decodedToken)
-    return res.send({ status: false, msg: "token is invalid" })
+    let toBeUpdatedUserId = req.params.userId;
+    let loggedInUserId = decodedToken.userId;
+    if (loggedInUserId != toBeUpdatedUserId)
+        return res.send({ status: false, msg: "You're not authorised to do this task" });
 
     next()
 }
 
-module.exports.tokenVerification=tokenVerification
+module.exports = {
+    authenticate: authenticate,
+    authorise: authorise
+}
