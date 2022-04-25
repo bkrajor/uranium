@@ -27,7 +27,7 @@ router.get("/getTemp", weatherController.getTemp)
 
 router.get("/getMemes", memesController.getMemes)
 
-router.get("/createMemes", memesController.createMemes)
+router.post("/createMemes", memesController.createMemes)
 
 
 
