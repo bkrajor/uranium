@@ -1,4 +1,5 @@
 const bookModel = require('../models/bookModel')
+const aws = require('aws-sdk')
 const userModel = require('../models/userModel')
 const { default: mongoose } = require("mongoose")
 const reviewModel = require('../models/reviewModel')
@@ -16,6 +17,29 @@ let isValidObjectId = (id) => {
     return mongoose.isValidObjectId(id)
 }
 
+aws.config.update({
+    accessKeyId: "AKIAY3L35MCRUJ6WPO6J",
+    secretAccessKey: "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",
+    region: "ap-south-1"
+})
+
+let uploadFile = async (file) => {
+    return new Promise(function (resolve, reject) {
+        let s3 = new aws.S3({ apiVersion: '2006-03-01' })
+
+        var uploadParams = {
+            ACL: "public-read",
+            Bucket: "classroom-training-bucket",
+            Key: "bharat/" + file.originalname,
+            Body: file.buffer
+        }
+        s3.upload(uploadParams, function (err, data) {
+            if (err) return reject({ "error": err})
+            return resolve(data.Location)
+        })
+    })
+}
+
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 const createBook = async (req, res) => {
@@ -23,7 +47,7 @@ const createBook = async (req, res) => {
         let data = req.body
         if (Object.keys(data).length == 0) return res.status(400).send({ status: false, message: "Please provide book details" })
 
-        const { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = data
+        const { title, excerpt, userId, ISBN, category, subcategory, releasedAt} = data
 
         // ---------------Validation starts from here----------------
         if (!title) return res.status(400).send({ status: false, message: "Title is required" })
@@ -58,7 +82,15 @@ const createBook = async (req, res) => {
         if (!/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/.test(releasedAt)) return res.status(400).send({ status: false, message: "ReleasedAt Date Format should be YYYY-MM-DD " })
         // -----------------Validation ends here------------------
 
-        const newBook = await bookModel.create(data)
+        let files = req.files
+        if (!files && files.length > 0) return res.status(400).send({ status: false, message: "No file found" })
+        let uploadedFileURL = await uploadFile(files[0])
+
+        const finalBookData= JSON.parse(JSON.stringify(data))
+        finalBookData.bookCover=uploadedFileURL
+
+        const newBook = await bookModel.create(finalBookData)
+
         res.status(201).send({ status: true, message: "Book created successfully", data: newBook })
     }
     catch (err) {
@@ -70,7 +102,7 @@ const createBook = async (req, res) => {
 
 const getBooks = async (req, res) => {
     try {
-        const data = req.query;
+        const data = req.query
         const filterQuery = { isDeleted: false }
 
         if (Object.keys(data).length != 0) {
@@ -119,7 +151,7 @@ const getBookById = async function (req, res) {
         const reviewsData = await reviewModel.find({ bookId: bookId, isDeleted: false })
 
         // ---------adding reviewsData to bookData-----------
-        bookData.reviewsData=reviewsData
+        bookData.reviewsData = reviewsData
 
         // let bookDataWithReviews = JSON.parse(JSON.stringify(bookData))
         // bookDataWithReviews.reviewsData = reviewsData
@@ -193,4 +225,4 @@ const deleteBookById = async function (req, res) {
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-module.exports = { createBook, getBooks, getBookById, deleteBookById, updateBook }
+module.exports = { createBook, getBooks, getBookById, deleteBookById, updateBook, uploadFile }

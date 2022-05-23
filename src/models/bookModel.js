@@ -23,6 +23,9 @@ const bookModel = new mongoose.Schema({
     reviews: {
         type: Number, default: 0, comment: String
     },
+    bookCover: { 
+        type:String
+    },
     deletedAt: {
         type: Date,
     },

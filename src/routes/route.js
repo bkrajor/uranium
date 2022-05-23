@@ -1,4 +1,5 @@
 const express = require('express')
+const aws = require('aws-sdk')
 const router = express.Router()
 const userController = require('../controllers/userController')
 const bookController = require('../controllers/bookController')
@@ -13,7 +14,7 @@ router.post('/register', userController.createUser)
 router.post('/login', userController.userlogin)
 
 // ---------Book's APIs-------------
-router.post('/books', authenticate, bookController.createBook)
+router.post('/books',authenticate, bookController.createBook)
 
 router.get('/books', authenticate, bookController.getBooks)
 
