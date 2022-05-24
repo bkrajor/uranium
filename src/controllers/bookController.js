@@ -83,7 +83,7 @@ const createBook = async (req, res) => {
         // -----------------Validation ends here------------------
 
         let files = req.files
-        if (!files && files.length > 0) return res.status(400).send({ status: false, message: "No file found" })
+        if (!(files && files.length > 0)) return res.status(400).send({ status: false, message: "No file found" })
         let uploadedFileURL = await uploadFile(files[0])
 
         data.bookCover=uploadedFileURL
