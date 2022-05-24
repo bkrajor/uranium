@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use( multer().any())
 
-mongoose.connect("mongodb+srv://bkrajor:Bk.190196@cluster0.bn0kl.mongodb.net/group36Database", {useNewUrlParser: true})
+mongoose.connect("mongodb+srv://bkrajor:Bk.190196@cluster0.bn0kl.mongodb.net/AWS-Database", {useNewUrlParser: true})
 .then( () => console.log("MongoDb is connected"))
 .catch ( err => console.log(err) )
 
